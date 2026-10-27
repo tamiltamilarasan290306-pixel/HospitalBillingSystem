@@ -1,0 +1,105 @@
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class HospitalBillingSystem extends JFrame implements ActionListener {
+
+    private JTextField patientNameField, treatmentField;
+    private JTextField costField, daysField, totalField;
+    private JButton calculateBtn, clearBtn, exitBtn;
+
+    public HospitalBillingSystem() {
+        setTitle("Hospital Billing System");
+        setSize(500, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        setLayout(new GridLayout(7, 2, 10, 10));
+
+        add(new JLabel("Patient Name:"));
+        patientNameField = new JTextField();
+        add(patientNameField);
+
+        add(new JLabel("Treatment:"));
+        treatmentField = new JTextField();
+        add(treatmentField);
+
+        add(new JLabel("Cost per Day (Rs.):"));
+        costField = new JTextField();
+        add(costField);
+
+        add(new JLabel("Number of Days:"));
+        daysField = new JTextField();
+        add(daysField);
+
+        add(new JLabel("Total Bill (Rs.):"));
+        totalField = new JTextField();
+        totalField.setEditable(false);
+        add(totalField);
+
+        calculateBtn = new JButton("Calculate Bill");
+        calculateBtn.addActionListener(this);
+        add(calculateBtn);
+
+        clearBtn = new JButton("Clear");
+        clearBtn.addActionListener(this);
+        add(clearBtn);
+
+        exitBtn = new JButton("Exit");
+        exitBtn.addActionListener(this);
+        add(exitBtn);
+
+        Font font = new Font("Arial", Font.PLAIN, 16);
+        for (Component component : getContentPane().getComponents()) {
+            component.setFont(font);
+        }
+
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == calculateBtn) {
+            try {
+                String patient = patientNameField.getText().trim();
+                String treatment = treatmentField.getText().trim();
+                double cost = Double.parseDouble(costField.getText().trim());
+                int days = Integer.parseInt(daysField.getText().trim());
+
+                if (patient.isEmpty() || treatment.isEmpty()) {
+                    JOptionPane.showMessageDialog(
+                        this, "Enter patient name and treatment.");
+                    return;
+                }
+
+                if (!Double.isFinite(cost) || cost <= 0 || days <= 0) {
+                    JOptionPane.showMessageDialog(
+                        this, "Cost and days must be positive numbers.");
+                    return;
+                }
+
+                double total = cost * days;
+                totalField.setText(String.format("%.2f", total));
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(
+                    this, "Enter a valid cost and number of days.");
+            }
+
+        } else if (e.getSource() == clearBtn) {
+            patientNameField.setText("");
+            treatmentField.setText("");
+            costField.setText("");
+            daysField.setText("");
+            totalField.setText("");
+
+        } else if (e.getSource() == exitBtn) {
+            dispose();
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new HospitalBillingSystem());
+    }
+}
